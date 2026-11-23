@@ -1,0 +1,224 @@
+#!/usr/bin/env python3
+"""bin/ia — envoie une consigne, des fichiers et des images à l'API Claude.
+
+Parcours IA, jour 3 — le même outil que les jours 1 et 2, porté en Python.
+Volontairement simple et lisible : une requête HTTP, une réponse JSON.
+Aucune dépendance (bibliothèque standard uniquement).
+
+Exemples :
+  python bin/ia "Explique ce projet en 10 lignes" --file README.md --file SPEC-ML.md
+  python bin/ia "Écris les tests de decoder()" --prompt-file ateliers/prompts/00-tests-decodeur.md --file SPEC-ML.md --file station/decodeur.py --out station/tests/test_decodeur.py
+  python bin/ia "Explique cette matrice" --image rapports/matrice_confusion.png
+  python bin/ia "..." --file SPEC-ML.md --dry-run        (affiche la requête sans l'envoyer)
+
+Variables d'environnement (ou lignes du fichier .env) :
+  ANTHROPIC_API_KEY  (obligatoire, jamais dans le dépôt)
+  IA_MODEL           (facultatif, défaut : claude-sonnet-5-5)
+  IA_API_URL         (facultatif, pour un proxy ou un serveur de test)
+"""
+
+import base64
+import json
+import os
+import re
+import sys
+import urllib.error
+import urllib.request
+from pathlib import Path
+
+API_URL = "https://api.anthropic.com/v1/messages"
+API_VERSION = "2023-06-01"
+DEFAULT_MODEL = "claude-sonnet-5-5"
+MAX_TOKENS = 16000
+RULES_FILE = "REGLES-IA.md"
+MAX_FILE_BYTES = 200_000
+
+USAGE = """Usage : python bin/ia ["consigne"] [options]
+
+  --prompt-file F   lit la consigne dans un fichier (ajoutée à la consigne en ligne)
+  --file F          joint un fichier texte (répétable)
+  --image F         joint une image PNG/JPEG/WebP/GIF (répétable)
+  --out F           écrit le 1er bloc de code de la réponse dans F
+  --force           autorise --out à remplacer un fichier existant
+  --model M         modèle à utiliser (défaut : $IA_MODEL ou claude-sonnet-5-5)
+  --no-rules        n'envoie pas REGLES-IA.md comme consigne système
+  --dry-run         affiche la requête JSON (sans la clé) et ne l'envoie pas
+  -h, --help        cette aide
+"""
+
+# Sous Windows, le terminal n'affiche pas toujours les accents : on force l'UTF-8.
+for flux in (sys.stdout, sys.stderr):
+    flux.reconfigure(encoding="utf-8", errors="replace")
+
+
+def usage(code: int = 0):
+    print(USAGE, file=sys.stderr if code else sys.stdout)
+    sys.exit(code)
+
+
+def fail(message: str):
+    print(f"✘ {message}", file=sys.stderr)
+    sys.exit(1)
+
+
+def read_text(path: str) -> str:
+    fichier = Path(path)
+    if not fichier.is_file():
+        fail(f"fichier introuvable : {path}")
+    if fichier.stat().st_size > MAX_FILE_BYTES:
+        fail(f"fichier trop gros (> 200 Ko) : {path}")
+    return fichier.read_text(encoding="utf-8")
+
+
+def load_env(path: str = ".env") -> None:
+    """Lit les lignes NOM=valeur du fichier .env, sans remplacer ce qui est déjà défini."""
+    if not Path(path).is_file():
+        return
+    for ligne in Path(path).read_text(encoding="utf-8").splitlines():
+        ligne = ligne.strip()
+        if ligne and not ligne.startswith("#") and "=" in ligne:
+            nom, valeur = ligne.split("=", 1)
+            valeur = valeur.strip().strip("\"'")
+            if valeur:
+                os.environ.setdefault(nom.strip(), valeur)
+
+
+load_env()
+
+# ---------------------------------------------------------------- arguments
+opts = {"prompt": [], "files": [], "images": [], "out": None, "force": False,
+        "model": os.environ.get("IA_MODEL") or DEFAULT_MODEL, "rules": True, "dry": False}
+
+args = sys.argv[1:]
+if not args:
+    usage(1)
+i = 0
+while i < len(args):
+    a = args[i]
+
+    def suivant() -> str:
+        global i
+        if i + 1 >= len(args):
+            fail(f"l'option {a} attend une valeur")
+        i += 1
+        return args[i]
+
+    if a in ("-h", "--help"):
+        usage()
+    elif a == "--prompt-file":
+        opts["prompt"].append(read_text(suivant()))
+    elif a == "--file":
+        opts["files"].append(suivant())
+    elif a == "--image":
+        opts["images"].append(suivant())
+    elif a == "--out":
+        opts["out"] = suivant()
+    elif a == "--force":
+        opts["force"] = True
+    elif a == "--model":
+        opts["model"] = suivant()
+    elif a == "--no-rules":
+        opts["rules"] = False
+    elif a == "--dry-run":
+        opts["dry"] = True
+    elif a.startswith("--"):
+        fail(f"option inconnue : {a}")
+    else:
+        opts["prompt"].append(a)
+    i += 1
+
+instruction = "\n\n".join(opts["prompt"]).strip()
+if not instruction:
+    fail("aucune consigne : donnez un texte entre guillemets ou --prompt-file")
+
+# ---------------------------------------------------------------- requête
+# L'IA ne voit QUE ce qu'on lui envoie : chaque fichier est recopié dans le message.
+TYPES = {"png": "image/png", "jpg": "image/jpeg", "jpeg": "image/jpeg", "webp": "image/webp", "gif": "image/gif"}
+content = []
+for img in opts["images"]:
+    ext = Path(img).suffix.lower().lstrip(".")
+    if not Path(img).is_file() or ext not in TYPES:
+        fail(f"image introuvable ou format non géré : {img}")
+    content.append({"type": "text", "text": f"Image suivante : {img}"})
+    content.append({"type": "image", "source": {
+        "type": "base64", "media_type": TYPES[ext],
+        "data": base64.b64encode(Path(img).read_bytes()).decode("ascii"),
+    }})
+
+text = ""
+for f in opts["files"]:
+    text += f'<fichier chemin="{f}">\n{read_text(f)}\n</fichier>\n\n'
+text += instruction
+if opts["out"] is not None:
+    text += (f"\n\nRéponds avec le contenu COMPLET du fichier {opts['out']} dans un seul bloc de code "
+             "(aucune partie omise, pas de « … »). Tes remarques éventuelles viennent après le bloc.")
+content.append({"type": "text", "text": text})
+
+system = ("Tu aides des développeurs Python débutants à découvrir le machine learning. "
+          "Réponds en français, de façon concise.")
+if opts["rules"] and Path(RULES_FILE).is_file():
+    system += f"\n\nRègles du projet ({RULES_FILE}) :\n" + read_text(RULES_FILE)
+
+request = {
+    "model": opts["model"],
+    "max_tokens": MAX_TOKENS,
+    "system": system,
+    "messages": [{"role": "user", "content": content}],
+}
+
+if opts["dry"]:
+    # Pédagogique : on montre exactement ce qui partirait (images abrégées, clé masquée).
+    shown = json.loads(json.dumps(request))
+    for part in shown["messages"][0]["content"]:
+        if part["type"] == "image":
+            part["source"]["data"] = f"…({len(part['source']['data'])} caractères base64)…"
+    print(f"POST {API_URL}\nx-api-key: sk-ant-…(masquée)\nanthropic-version: {API_VERSION}\n")
+    print(json.dumps(shown, indent=4, ensure_ascii=False))
+    sys.exit(0)
+
+key = os.environ.get("ANTHROPIC_API_KEY")
+if not key:
+    fail("ANTHROPIC_API_KEY n'est pas définie (dans le fichier .env, ou : export ANTHROPIC_API_KEY=sk-ant-…)")
+
+# ---------------------------------------------------------------- appel HTTP
+print(f"… envoi à {opts['model']}", file=sys.stderr)
+http = urllib.request.Request(
+    os.environ.get("IA_API_URL") or API_URL,  # IA_API_URL : proxy ou serveur de test
+    data=json.dumps(request, ensure_ascii=False).encode("utf-8"),
+    headers={"content-type": "application/json", "x-api-key": key, "anthropic-version": API_VERSION},
+    method="POST",
+)
+try:
+    with urllib.request.urlopen(http, timeout=300) as reponse:
+        raw = reponse.read().decode("utf-8")
+except urllib.error.HTTPError as erreur:
+    raw = erreur.read().decode("utf-8", errors="replace")
+    try:
+        message = json.loads(raw)["error"]["message"]
+    except (ValueError, KeyError, TypeError):
+        message = raw
+    fail(f"l'API a répondu {erreur.code} : {message}")
+except OSError as erreur:
+    fail(f"erreur réseau : {erreur}")
+
+data = json.loads(raw)
+answer = "".join(block.get("text", "") for block in data.get("content", []) if block.get("type") == "text")
+
+# ---------------------------------------------------------------- sortie
+print(answer)
+
+if opts["out"] is not None:
+    bloc = re.search(r"```[\w-]*\r?\n(.*?)```", answer, re.DOTALL)
+    if not bloc:
+        fail(f"aucun bloc de code trouvé : {opts['out']} n'a pas été écrit")
+    if data.get("stop_reason") == "max_tokens":
+        fail(f"réponse tronquée (limite de longueur atteinte) : {opts['out']} n'a pas été écrit")
+    sortie = Path(opts["out"])
+    if sortie.is_file() and not opts["force"]:
+        fail(f"{opts['out']} existe déjà : relancez avec --force pour le remplacer")
+    sortie.parent.mkdir(parents=True, exist_ok=True)
+    sortie.write_text(bloc.group(1), encoding="utf-8", newline="\n")
+    print(f"✔ fichier écrit : {opts['out']} — relisez-le, puis lancez les tests.", file=sys.stderr)
+
+u = data.get("usage", {})
+print(f"ℹ tokens : {u.get('input_tokens', 0)} envoyés, {u.get('output_tokens', 0)} reçus", file=sys.stderr)

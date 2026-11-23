@@ -1,0 +1,47 @@
+### Fichier d'exploration de l'API (extension « REST Client » de VS Code, ou client HTTP de JetBrains).
+### Lancez d'abord :  uvicorn api.main:app --reload
+@base = http://localhost:8000
+
+### 1. Santé : l'API répond-elle, quels modèles sont chargés ?
+GET {{base}}/sante
+
+### 2. Prévision : 4 relevés consécutifs (14 mars 2025, de 6 h à 9 h UTC) → température prévue à 12 h
+POST {{base}}/predict/temperature
+Content-Type: application/json
+
+{
+  "releves": [
+    {"instant_mesure": "2025-03-14T06:00:00Z", "temperature": -0.2, "humidite": 95, "pression_atmospherique": 996.7, "vent_vitesse": 1.4, "vent_direction": 17, "rafale_max": 3.8, "precipitation": 0.0, "pluie_cumul": 2629.2, "luminosite": 0, "indice_uv": 0.0},
+    {"instant_mesure": "2025-03-14T07:00:00Z", "temperature": -0.3, "humidite": 95, "pression_atmospherique": 996.4, "vent_vitesse": 1.8, "vent_direction": 22, "rafale_max": 3.3, "precipitation": 0.0, "pluie_cumul": 2629.2, "luminosite": 2880, "indice_uv": 0.2},
+    {"instant_mesure": "2025-03-14T08:00:00Z", "temperature": 0.2, "humidite": 92, "pression_atmospherique": 997.4, "vent_vitesse": 3.3, "vent_direction": 31, "rafale_max": 5.8, "precipitation": 0.0, "pluie_cumul": 2629.2, "luminosite": 13440, "indice_uv": 1.0},
+    {"instant_mesure": "2025-03-14T09:00:00Z", "temperature": 3.3, "humidite": 82, "pression_atmospherique": 997.9, "vent_vitesse": 3.3, "vent_direction": 43, "rafale_max": 6.1, "precipitation": 0.0, "pluie_cumul": 2629.2, "luminosite": 24360, "indice_uv": 1.8}
+  ]
+}
+
+### 3. Prévision, erreur : seulement 3 relevés → 422
+POST {{base}}/predict/temperature
+Content-Type: application/json
+
+{
+  "releves": [
+    {"instant_mesure": "2025-03-14T07:00:00Z", "temperature": -0.3, "humidite": 95, "pression_atmospherique": 996.4, "vent_vitesse": 1.8, "vent_direction": 22, "rafale_max": 3.3, "precipitation": 0.0, "luminosite": 2880, "indice_uv": 0.2},
+    {"instant_mesure": "2025-03-14T08:00:00Z", "temperature": 0.2, "humidite": 92, "pression_atmospherique": 997.4, "vent_vitesse": 3.3, "vent_direction": 31, "rafale_max": 5.8, "precipitation": 0.0, "luminosite": 13440, "indice_uv": 1.0},
+    {"instant_mesure": "2025-03-14T09:00:00Z", "temperature": 3.3, "humidite": 82, "pression_atmospherique": 997.9, "vent_vitesse": 3.3, "vent_direction": 43, "rafale_max": 6.1, "precipitation": 0.0, "luminosite": 24360, "indice_uv": 1.8}
+  ]
+}
+
+### 4. Catégorie : un relevé → état du ciel (501 tant que l'atelier 4 n'est pas fait)
+POST {{base}}/classify/conditions
+Content-Type: application/json
+
+{
+  "releve": {"instant_mesure": "2025-03-14T09:00:00Z", "temperature": 3.3, "humidite": 82, "pression_atmospherique": 997.9, "vent_vitesse": 3.3, "vent_direction": 43, "rafale_max": 6.1, "precipitation": 0.0, "pluie_cumul": 2629.2, "luminosite": 24360, "indice_uv": 1.8}
+}
+
+### 5. Catégorie, erreur : humidité à 150 % → 422
+POST {{base}}/classify/conditions
+Content-Type: application/json
+
+{
+  "releve": {"instant_mesure": "2025-03-14T09:00:00Z", "temperature": 3.3, "humidite": 150, "pression_atmospherique": 997.9, "vent_vitesse": 3.3, "vent_direction": 43, "rafale_max": 6.1, "precipitation": 0.0, "luminosite": 24360, "indice_uv": 1.8}
+}

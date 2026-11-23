@@ -1,0 +1,10 @@
+# Versions figées : tout le monde a exactement les mêmes (Python 3.12 à 3.14).
+pandas==3.1.1
+scikit-learn==1.9.1
+joblib==1.6.0
+matplotlib==3.11.2
+fastapi==0.165.0
+uvicorn==0.54.0
+pydantic==2.14.4
+pytest==9.2.0
+httpx==0.28.1

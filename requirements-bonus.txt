@@ -1,0 +1,4 @@
+# Uniquement pour les bonus (MongoDB, MySQL, MQTT) : pip install -r requirements-bonus.txt
+pymongo==4.20.1
+pymysql==1.2.4
+paho-mqtt==2.2.0

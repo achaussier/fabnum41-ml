@@ -27,7 +27,7 @@ Si un modèle est à `false`, il n'a pas été entraîné (ateliers 2 et 3) : en
 
 Ouvrez `api.http` (extension « REST Client » de VS Code) et envoyez la requête n°2.
 
-✅ *Vous devez voir :* une `valeur_prevue` proche de 7 °C et une `incertitude` proche de 1,4.
+✅ *Vous devez voir :* une `valeur_prevue` proche de 7 °C et une `incertitude` entre 1 et 3 °C.
 Il a fait 6,8 °C ce jour-là à 12 h.
 
 Sans VS Code, la même chose se fait dans `/docs`, ou avec le script de la rubrique « Si ça coince ».

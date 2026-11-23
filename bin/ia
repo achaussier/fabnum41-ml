@@ -172,13 +172,13 @@ if opts["dry"]:
     for part in shown["messages"][0]["content"]:
         if part["type"] == "image":
             part["source"]["data"] = f"…({len(part['source']['data'])} caractères base64)…"
-    print(f"POST {API_URL}\nx-api-key: sk-ant-…(masquée)\nanthropic-version: {API_VERSION}\n")
+    print(f"POST {API_URL}\nx-api-key: …(masquée)\nanthropic-version: {API_VERSION}\n")
     print(json.dumps(shown, indent=4, ensure_ascii=False))
     sys.exit(0)
 
 key = os.environ.get("ANTHROPIC_API_KEY")
 if not key:
-    fail("ANTHROPIC_API_KEY n'est pas définie (dans le fichier .env, ou : export ANTHROPIC_API_KEY=sk-ant-…)")
+    fail("ANTHROPIC_API_KEY n'est pas définie (dans le fichier .env, ou : export ANTHROPIC_API_KEY=votre-clé)")
 
 # ---------------------------------------------------------------- appel HTTP
 print(f"… envoi à {opts['model']}", file=sys.stderr)

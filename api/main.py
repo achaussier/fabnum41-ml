@@ -17,6 +17,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field, model_validator
 
+from api import stockage
 from ml.preparation import ajouter_variables
 
 DOSSIER_MODELES = Path(__file__).resolve().parent.parent / "modeles"
@@ -129,18 +130,35 @@ def prevoir_temperature(requete: RequetePrediction):
     valeur_prevue = float(foret.predict(entree)[0])
     incertitude = float(pd.Series(avis_des_arbres).std(ddof=0))
 
-    return {
+    reponse = {
         "grandeur": "temperature",
         "instant_prevu": en_texte(requete.releves[-1].instant_mesure + timedelta(hours=3)),
         "valeur_prevue": round(valeur_prevue, 1),
         "incertitude": round(incertitude, 1),
         "unite": "°C",
     }
+    stockage.enregistrer_prevision(reponse)
+    return reponse
 
 
 @app.post("/classify/conditions", summary="Deviner l'état du ciel à partir d'un relevé")
 def categoriser_conditions(requete: RequeteCategorie):
     """Reçoit un relevé et renvoie la catégorie la plus probable, avec la probabilité de chacune."""
-    # TODO (atelier 4) : écrire cette route d'après SPEC-ML.md, section « API »,
-    # sur le modèle de prevoir_temperature() juste au-dessus.
-    return erreur(501, "La route /classify/conditions n'est pas encore écrite (atelier 4)", "non_implemente")
+    paquet = MODELES["categorie"]
+    if paquet is None:
+        return erreur(503, "Le modèle de catégorisation n'est pas entraîné : lancez python ml/entrainer_categorie.py", "modele_absent")
+
+    # Un seul relevé suffit : on y ajoute l'heure et le mois, comme à l'entraînement.
+    tableau = vers_tableau([requete.releve])
+    tableau["heure"] = tableau.index.hour
+    tableau["mois"] = tableau.index.month
+    entree = tableau[paquet["variables"]]
+
+    # predict_proba donne, pour chaque catégorie, la part des arbres qui ont voté pour elle.
+    parts = paquet["modele"].predict_proba(entree)[0]
+    probabilites = {classe: round(float(part), 2) for classe, part in zip(paquet["classes"], parts)}
+    categorie = max(probabilites, key=probabilites.get)
+
+    reponse = {"categorie": categorie, "probabilites": probabilites}
+    stockage.enregistrer_categorie(requete.releve.instant_mesure, reponse)
+    return reponse

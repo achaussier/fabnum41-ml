@@ -17,9 +17,8 @@ matplotlib.use("Agg")  # on écrit un fichier PNG, sans ouvrir de fenêtre
 import matplotlib.pyplot as plt
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_absolute_error
-from sklearn.model_selection import train_test_split
 
-from preparation import CIBLE_PREDICTION, CSV_HISTORIQUE, VARIABLES_PREDICTION, ajouter_variables, charger
+from preparation import CIBLE_PREDICTION, CSV_HISTORIQUE, VARIABLES_PREDICTION, ajouter_variables, charger, decouper
 
 FICHIER_MODELE = Path("modeles/prediction_temperature.joblib")
 GRAPHIQUE = Path("rapports/prediction_vs_reel.png")
@@ -32,12 +31,12 @@ sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 def main() -> None:
     # 1. Charger l'historique et calculer les variables.
     donnees = ajouter_variables(charger(CSV_HISTORIQUE))
-    X = donnees[VARIABLES_PREDICTION]  # ce que le modèle regarde
-    y = donnees[CIBLE_PREDICTION]      # ce qu'il doit deviner
 
-    # 2. Garder un quart des exemples de côté pour le test.
-    X_entrainement, X_test, y_entrainement, y_test = train_test_split(
-        X, y, test_size=0.25, shuffle=True, random_state=42)
+    # 2. Découper DANS LE TEMPS : avant 2025 pour apprendre, 2025 pour tester.
+    #    X : ce que le modèle regarde. y : ce qu'il doit deviner.
+    entrainement, test = decouper(donnees)
+    X_entrainement, y_entrainement = entrainement[VARIABLES_PREDICTION], entrainement[CIBLE_PREDICTION]
+    X_test, y_test = test[VARIABLES_PREDICTION], test[CIBLE_PREDICTION]
     print("Prévoir la température dans 3 heures")
     print(f"  exemples d'entraînement : {len(X_entrainement)}")
     print(f"  exemples de test        : {len(X_test)}")

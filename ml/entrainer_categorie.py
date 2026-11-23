@@ -3,10 +3,8 @@
     python ml/entrainer_categorie.py
 
 Quatre catégories possibles : Dégagé, Nuageux, Brouillard, Précipitations.
-
-SQUELETTE À COMPLÉTER (atelier 3). Les noms ci-dessous sont imposés : l'API et
-SPEC-ML.md s'appuient dessus. Le script ml/entrainer_prediction.py peut servir de
-modèle pour la forme, mais attention : ici on devine une catégorie, pas un nombre.
+Le script affiche l'exactitude du modèle et celle d'une baseline, le rapport par
+catégorie, trace rapports/matrice_confusion.png et enregistre modeles/categorie.joblib.
 """
 
 import sys
@@ -32,30 +30,60 @@ sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 
 def main() -> None:
-    # TODO 1. Charger l'historique (CSV_HISTORIQUE) et calculer les variables,
-    #         avec charger() et ajouter_variables() de preparation.py.
+    # 1. Charger l'historique et calculer les variables.
+    donnees = ajouter_variables(charger(CSV_HISTORIQUE))
 
-    # TODO 2. Découper les données en deux parties, entraînement et test.
-    #         Les entrées sont les colonnes VARIABLES_CATEGORIE, la cible est CIBLE_CATEGORIE.
-    #         Afficher le nombre d'exemples de chaque partie.
+    # 2. Découper DANS LE TEMPS : avant 2025 pour apprendre, 2025 pour tester.
+    entrainement, test = decouper(donnees)
+    X_entrainement, y_entrainement = entrainement[VARIABLES_CATEGORIE], entrainement[CIBLE_CATEGORIE]
+    X_test, y_test = test[VARIABLES_CATEGORIE], test[CIBLE_CATEGORIE]
+    print("Deviner l'état du ciel")
+    print(f"  exemples d'entraînement : {len(X_entrainement)}")
+    print(f"  exemples de test        : {len(X_test)}")
 
-    # TODO 3. Entraîner un RandomForestClassifier(n_estimators=200, random_state=42, n_jobs=-1).
+    # 3. Entraîner la forêt.
+    modele = RandomForestClassifier(n_estimators=200, random_state=42, n_jobs=-1)
+    modele.fit(X_entrainement, y_entrainement)
 
-    # TODO 4. Évaluer sur le test et afficher :
-    #         - l'exactitude de la baseline « toujours la catégorie la plus fréquente »
-    #           (la plus fréquente dans l'entraînement) ;
-    #         - l'exactitude de la forêt sur l'entraînement, puis sur le test ;
-    #         - le rapport par catégorie (classification_report, labels=CLASSES).
+    # 4. Évaluer. L'exactitude est la part de bonnes réponses.
+    #    La baseline : répondre toujours la catégorie la plus fréquente de l'entraînement.
+    previsions = modele.predict(X_test)
+    plus_frequente = y_entrainement.mode()[0]
+    exactitude_baseline = accuracy_score(y_test, [plus_frequente] * len(y_test))
+    exactitude_entrainement = accuracy_score(y_entrainement, modele.predict(X_entrainement))
+    exactitude_test = accuracy_score(y_test, previsions)
+    print("\nExactitude (part de bonnes réponses) : plus c'est haut, mieux c'est")
+    print(f"  baseline « toujours {plus_frequente} »  : {exactitude_baseline:.1%}")
+    print(f"  forêt, sur l'entraînement    : {exactitude_entrainement:.1%}")
+    print(f"  forêt, sur le test           : {exactitude_test:.1%}")
 
-    # TODO 5. Tracer la matrice de confusion dans GRAPHIQUE (rapports/matrice_confusion.png) :
-    #         en ligne la réalité, en colonne la réponse du modèle, dans l'ordre de CLASSES.
+    # Le rapport par catégorie. « recall » est le rappel : sur 100 heures de
+    # brouillard, combien le modèle en a-t-il reconnu ?
+    print("\nRapport par catégorie")
+    print(classification_report(y_test, previsions, labels=CLASSES, zero_division=0))
 
-    # TODO 6. Enregistrer dans FICHIER_MODELE (modeles/categorie.joblib) un dictionnaire :
-    #         {"modele": ..., "variables": VARIABLES_CATEGORIE, "classes": liste des classes du modèle,
-    #          "exactitude_test": ..., "date_entrainement": ...}
-    #         avec joblib.dump(..., compress=3), comme dans entrainer_prediction.py.
+    # 5. Tracer la matrice de confusion : en ligne la réalité, en colonne la réponse du modèle.
+    GRAPHIQUE.parent.mkdir(exist_ok=True)
+    figure, axe = plt.subplots(figsize=(7, 6))
+    ConfusionMatrixDisplay.from_predictions(y_test, previsions, labels=CLASSES, cmap="Blues", colorbar=False, ax=axe)
+    axe.set_title("Matrice de confusion (jeu de test : 2025)")
+    axe.set_xlabel("Réponse du modèle")
+    axe.set_ylabel("Réalité")
+    figure.tight_layout()
+    figure.savefig(GRAPHIQUE, dpi=110)
+    plt.close(figure)
+    print(f"Graphique         : {GRAPHIQUE.as_posix()}")
 
-    print("Rien n'est encore entraîné : complétez les TODO de ml/entrainer_categorie.py (atelier 3).")
+    # 6. Enregistrer le modèle, avec ce qu'il faut savoir pour le réutiliser.
+    FICHIER_MODELE.parent.mkdir(exist_ok=True)
+    joblib.dump({
+        "modele": modele,
+        "variables": VARIABLES_CATEGORIE,
+        "classes": list(modele.classes_),
+        "exactitude_test": round(float(exactitude_test), 3),
+        "date_entrainement": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+    }, FICHIER_MODELE, compress=3)
+    print(f"Modèle enregistré : {FICHIER_MODELE.as_posix()}")
 
 
 if __name__ == "__main__":

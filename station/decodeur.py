@@ -20,15 +20,24 @@ def _entier_signe(payload_hex: str, debut: int, fin: int) -> int:
 def decoder(payload_hex: str) -> dict:
     """Transforme le payload de la borne en dictionnaire de mesures."""
     payload_hex = payload_hex.strip()
-    return {
+    if len(payload_hex) < 40:
+        raise ValueError(f"payload trop court : {len(payload_hex)} caractères, 40 au minimum")
+
+    # Blocs 1 et 2 : toujours présents.
+    mesures = {
         "temperature": _entier_signe(payload_hex, 2, 6) / 10,
-        "humidite": _entier(payload_hex, 6, 8) / 10,
+        "humidite": _entier(payload_hex, 6, 8),
         "luminosite": _entier(payload_hex, 8, 16),
         "indice_uv": _entier(payload_hex, 16, 18) / 10,
         "vent_vitesse": _entier(payload_hex, 18, 22) / 10,
-        "vent_direction": _entier(payload_hex, 24, 28) / 10,
+        "vent_direction": _entier(payload_hex, 24, 28),
         "precipitation": _entier(payload_hex, 28, 36) / 1000,
-        "pression_atmospherique": _entier(payload_hex, 36, 40),
-        "rafale_max": _entier(payload_hex, 42, 46) / 10,
-        "pluie_cumul": _entier(payload_hex, 46, 54) / 10,
+        "pression_atmospherique": _entier(payload_hex, 36, 40) / 10,
     }
+
+    # Bloc 3 : absent des anciens micrologiciels (payload de 40 caractères).
+    if len(payload_hex) >= 54:
+        mesures["rafale_max"] = _entier(payload_hex, 42, 46) / 10
+        mesures["pluie_cumul"] = _entier(payload_hex, 46, 54) / 10
+
+    return mesures

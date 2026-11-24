@@ -62,6 +62,7 @@ station-meteo-ml/
 ├── bin/ia                          le script pour interroger l'IA
 ├── ateliers/                       un guide par atelier, et les prompts
 ├── api.http                        des requêtes prêtes à envoyer à l'API
+├── notes.md                        votre carnet de bord : les questions de chaque atelier
 ├── SPEC-ML.md                      la référence : problèmes, mesures, contrat de l'API, décodage
 └── REGLES-IA.md                    les règles envoyées à l'IA à chaque appel
 ```

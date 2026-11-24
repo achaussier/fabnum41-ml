@@ -1,8 +1,20 @@
 # Bonus
 
-Pour celles et ceux qui ont terminé. À écrire avec `bin/ia`, sans prompt fourni (sauf le dernier) :
-c'est à vous de rédiger la consigne, de joindre les bons fichiers et de vérifier le résultat.
-Les solutions sont sur la branche `solutions`.
+Pour celles et ceux qui ont terminé les ateliers 0 à 5.
+
+**Le but :** voler de vos propres ailes. Il n'y a plus de prompt fourni (sauf pour le bonus D) : c'est
+à vous de rédiger la consigne, de choisir les fichiers à joindre et de vérifier le résultat, comme au
+jour 2 quand vous aviez écrit votre propre scénario.
+
+**Avant chaque appel à l'IA**, écrivez trois lignes dans `notes.md` :
+
+1. ce que le script doit produire, et comment vous saurez qu'il est juste ;
+2. les fichiers à joindre (l'IA ne voit que ceux-là) ;
+3. la règle de `SPEC-ML.md` ou de `REGLES-IA.md` qui s'applique.
+
+**Après**, relisez, lancez, et comparez à ce que vous aviez écrit en 1.
+
+Les bonus sont indépendants : choisissez celui qui vous intéresse. Les solutions sont sur la branche `solutions`.
 
 ## A. Détecter les pannes de capteur
 
@@ -19,7 +31,11 @@ La colonne `panne_injectee` dit où elles sont. Écrivez `ml/anomalies.py` :
 - la sortie reprend les colonnes de la table `anomalie` : `INSTANT_MESURE_ANORMALE`, `VALEUR_MESUREE`,
   `SCORE_ANOMALIE`, `CODE_GRANDEUR` (voir `ateliers/station_meteo.sql`).
 
-Indice : un capteur figé ne se voit pas sur un relevé isolé. Donnez au modèle l'**écart avec l'heure précédente**.
+À réfléchir avant d'écrire : ici, il n'y a pas de catégorie à deviner, le modèle cherche seul ce qui est
+« bizarre ». Un capteur figé pendant six heures donne-t-il une valeur bizarre ? Que faudrait-il montrer
+au modèle pour qu'il le remarque ?
+
+Et pour juger le résultat : retrouver toutes les pannes en sonnant mille fausses alertes, est-ce un bon détecteur ?
 
 ## B. Enregistrer les prévisions
 
@@ -31,7 +47,8 @@ Si elle n'est pas définie, l'API fonctionne comme avant.
 pip install -r requirements-bonus.txt
 ```
 
-Indice : une panne de la base ne doit **jamais** empêcher l'API de répondre.
+À réfléchir avant d'écrire : que doit répondre l'API si la base MySQL est en panne ? Comment le testeriez-vous
+sans base de données ?
 
 ## C. Regrouper les journées
 
@@ -40,7 +57,8 @@ pluie du jour, vent moyen…). Affichez la moyenne de chaque groupe, puis donnez
 (« belle journée d'été », « journée de pluie »…). Ici, il n'y a pas de bonne réponse à retrouver :
 c'est vous qui interprétez.
 
-Indice : `KMeans` compare des distances. Mettez les colonnes à la même échelle avec `StandardScaler`.
+À réfléchir avant d'écrire : `KMeans` compare des distances. La pression tourne autour de 1 000, le vent
+autour de 3 : laquelle des deux colonnes pèsera le plus, si l'on ne fait rien ?
 
 ## D. Imaginer la suite
 

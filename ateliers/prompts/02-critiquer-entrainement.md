@@ -15,10 +15,11 @@ Réponds à ces questions, dans l'ordre :
 2. L'erreur affichée « sur le test » est-elle digne de confiance ? Explique pourquoi avec une image
    simple (par exemple un examen), sans formule.
 3. Le modèle est-il bien comparé à une baseline ? Laquelle ?
-4. Que faut-il modifier, précisément ? Donne uniquement les lignes à changer, en réutilisant
-   les fonctions qui existent déjà dans ml/preparation.py.
-5. Après correction, l'erreur affichée va-t-elle monter ou descendre ? Pourquoi est-ce une bonne nouvelle ?
+4. Que faut-il modifier ? N'écris PAS le code corrigé : indique seulement quelle fonction de
+   ml/preparation.py utiliser, ce qu'elle reçoit et ce qu'elle renvoie. C'est au lecteur d'écrire les lignes.
+5. Après correction, l'erreur affichée va-t-elle monter ou descendre ? Ne réponds pas directement :
+   pose au lecteur deux questions qui l'aideront à le deviner lui-même.
 
 Contraintes :
 - ne signale que des problèmes réellement présents dans les fichiers joints ;
-- ne réécris pas tout le script.
+- ne réécris pas le script, ni en entier ni en partie.

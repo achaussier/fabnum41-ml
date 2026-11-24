@@ -5,6 +5,7 @@
   2. la direction du vent était divisée par 10 (12.6 au lieu de 126) ;
   3. la pression n'était pas divisée par 10 (10124 au lieu de 1012.4 hPa) ;
   4. un payload de 40 caractères, pourtant valide, provoquait une ValueError.
+  5. un caractère non hexadécimal dans un identifiant de bloc (que le décodeur ne lit pas) était accepté.
 Ces tests échouent sur main et passent sur la branche solutions.
 """
 
@@ -78,6 +79,19 @@ def test_un_payload_trop_court_est_refuse():
         decoder(PAYLOAD_REFERENCE[:30])
 
 
-def test_un_payload_qui_n_est_pas_de_l_hexadecimal_est_refuse():
+@pytest.mark.parametrize("payload", [
+    "Z" * 54,
+    PAYLOAD_COMPLET[:10] + "G" + PAYLOAD_COMPLET[11:],  # dans une mesure
+    "ZZ" + PAYLOAD_COMPLET[2:],                         # dans un identifiant de bloc
+])
+def test_un_payload_qui_n_est_pas_de_l_hexadecimal_est_refuse(payload):
     with pytest.raises(ValueError):
-        decoder("Z" * 54)
+        decoder(payload)
+
+
+def test_une_pluie_non_nulle_est_decodee():
+    # Les deux payloads de la spec ont une pluie à zéro : ils ne disent rien du calcul « valeur / 1000 ».
+    # 000004B0 vaut 1200, soit 1,2 mm/h (calculé à la main d'après le tableau de la spec).
+    payload = PAYLOAD_COMPLET[:28] + "000004B0" + PAYLOAD_COMPLET[36:]
+
+    assert decoder(payload)["precipitation"] == pytest.approx(1.2)

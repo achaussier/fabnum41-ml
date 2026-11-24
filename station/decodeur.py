@@ -4,6 +4,8 @@ La borne envoie ses mesures sous la forme d'un texte hexadécimal (le « payload
 découpé en blocs. Le détail du découpage est dans SPEC-ML.md, section « Décodage ».
 """
 
+HEXADECIMAL = "0123456789abcdefABCDEF"
+
 
 def _entier(payload_hex: str, debut: int, fin: int) -> int:
     """Lit un morceau du payload et le convertit en nombre entier."""
@@ -22,6 +24,9 @@ def decoder(payload_hex: str) -> dict:
     payload_hex = payload_hex.strip()
     if len(payload_hex) < 40:
         raise ValueError(f"payload trop court : {len(payload_hex)} caractères, 40 au minimum")
+    # Les identifiants de bloc ne sont pas décodés, mais ils doivent eux aussi être de l'hexadécimal.
+    if any(caractere not in HEXADECIMAL for caractere in payload_hex):
+        raise ValueError("le payload contient autre chose que de l'hexadécimal")
 
     # Blocs 1 et 2 : toujours présents.
     mesures = {

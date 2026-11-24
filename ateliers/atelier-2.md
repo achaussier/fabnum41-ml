@@ -111,7 +111,7 @@ pytest
 cette ligne à la fin de `main()`, relancez le script, puis retirez-la :
 
 ```python
-    print(sorted(zip(modele.feature_importances_.round(3), VARIABLES_PREDICTION), reverse=True))
+    print(sorted(zip(modele.feature_importances_.round(3).tolist(), VARIABLES_PREDICTION), reverse=True))
 ```
 
 ### 7. Commit

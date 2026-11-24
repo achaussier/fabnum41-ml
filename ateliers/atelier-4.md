@@ -53,8 +53,8 @@ Si un modèle est à `false`, il n'a pas été entraîné (ateliers 2 et 3) : en
 
 Ouvrez `api.http` (extension « REST Client » de VS Code) et envoyez la requête n°2.
 
-✅ *Vous devez voir :* une `valeur_prevue` proche de 7 °C et une `incertitude` entre 1 et 3 °C.
-Il a fait 6,8 °C ce jour-là à 12 h.
+✅ *Vous devez voir :* une `valeur_prevue` entre 8 et 9 °C et une `incertitude` proche de 2 °C.
+Il a fait 6,8 °C ce jour-là à 12 h : l'écart tient-il dans l'incertitude annoncée ?
 
 Sans VS Code, la même chose se fait dans `/docs`, ou avec le script de la rubrique « Si ça coince ».
 
@@ -155,7 +155,8 @@ Envoyer une requête sans outil (le fichier `exemple.json` contient le corps de 
 python -c "import json, urllib.request; r = urllib.request.Request('http://localhost:8000/classify/conditions', data=open('exemple.json', 'rb').read(), headers={'Content-Type': 'application/json'}); print(urllib.request.urlopen(r).read().decode())"
 ```
 
-La solution : `git show origin/solutions:api/main.py`.
+La solution : `git show origin/solutions:api/main.py`. Les lignes qui commencent par `stockage.` et
+l'import `from api import stockage` appartiennent à un bonus : ne les recopiez pas.
 
 ## Pour aller plus loin
 

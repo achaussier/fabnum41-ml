@@ -1,0 +1,3 @@
+$ python ml/entrainer_categorie.py
+Rien n'est encore entraîné : complétez les TODO de ml/entrainer_categorie.py (atelier 3).
+

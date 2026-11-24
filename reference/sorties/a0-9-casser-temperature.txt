@@ -1,0 +1,39 @@
+$ pytest station --tb=line
+============================= test session starts ==============================
+platform linux -- Python 3.13.5, pytest-9.2.0, pluggy-1.7.0
+rootdir: station-meteo-ml
+configfile: pytest.ini
+plugins: anyio-4.16.0
+collected 30 items
+
+station/tests/test_decodeur.py F........F............F......             [ 96%]
+station/tests/test_exemple.py F                                          [100%]
+
+=================================== FAILURES ===================================
+E   assert 2.66 == 26.6 ± 2.7e-05
+      
+      comparison failed
+      Obtained: 2.66
+      Expected: 26.6 ± 2.7e-05
+station/tests/test_decodeur.py:34: assert 2.66 == 26.6 ± 2.7e-05
+E   assert 0.73 == 7.3 ± 7.3e-06
+      
+      comparison failed
+      Obtained: 0.73
+      Expected: 7.3 ± 7.3e-06
+station/tests/test_decodeur.py:58: assert 0.73 == 7.3 ± 7.3e-06
+E   assert -0.14 == -1.4 ± 1.4e-06
+      
+      comparison failed
+      Obtained: -0.14
+      Expected: -1.4 ± 1.4e-06
+station/tests/test_decodeur.py:70: assert -0.14 == -1.4 ± 1.4e-06
+E   assert 0.73 == 7.3
+station/tests/test_exemple.py:12: assert 0.73 == 7.3
+=========================== short test summary info ============================
+FAILED station/tests/test_decodeur.py::test_le_payload_de_reference_est_decode[temperature-26.6]
+FAILED station/tests/test_decodeur.py::test_le_payload_complet_est_decode[temperature-7.3]
+FAILED station/tests/test_decodeur.py::test_une_temperature_negative_est_decodee
+FAILED station/tests/test_exemple.py::test_la_temperature_et_la_luminosite_sont_decodees
+========================= 4 failed, 26 passed in 0.10s =========================
+

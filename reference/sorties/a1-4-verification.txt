@@ -1,0 +1,11 @@
+$ python -c import sys; sys.path.insert(0, 'ml'); from preparation import charger, ajouter_variables; d = ajouter_variables(charger()); print(d.loc['2025-03-14 06:00':'2025-03-14 12:00', ['temperature', 'temperature_moins_3h', 'temperature_dans_3h']].to_string())
+                           temperature  temperature_moins_3h  temperature_dans_3h
+instant_mesure                                                                   
+2025-03-14 06:00:00+00:00         -0.2                   0.7                  3.3
+2025-03-14 07:00:00+00:00         -0.3                   0.3                  5.0
+2025-03-14 08:00:00+00:00          0.2                  -0.2                  6.4
+2025-03-14 09:00:00+00:00          3.3                  -0.2                  6.8
+2025-03-14 10:00:00+00:00          5.0                  -0.3                  7.3
+2025-03-14 11:00:00+00:00          6.4                   0.2                  8.3
+2025-03-14 12:00:00+00:00          6.8                   3.3                  8.1
+

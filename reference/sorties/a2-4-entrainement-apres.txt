@@ -1,0 +1,13 @@
+$ python ml/entrainer_prediction.py
+Prévoir la température dans 3 heures
+  exemples d'entraînement : 26301
+  exemples de test        : 8757
+
+Erreur moyenne (MAE), en °C : plus c'est bas, mieux c'est
+  baseline « persistance »    : 2.06 °C
+  forêt, sur l'entraînement   : 0.28 °C
+  forêt, sur le test          : 0.86 °C
+
+Modèle enregistré : modeles/prediction_temperature.joblib
+Graphique         : rapports/prediction_vs_reel.png
+

@@ -1,0 +1,6 @@
+$ python -c from station.decodeur import decoder; print(decoder('01010A5B0001C86160000902007E00000000278C'))
+{'temperature': 26.6, 'humidite': 91, 'luminosite': 116833, 'indice_uv': 9.6, 'vent_vitesse': 0.9, 'vent_direction': 126, 'precipitation': 0.0, 'pression_atmospherique': 1012.4}
+
+$ python -c from station.decodeur import decoder; print(decoder('01004958000009BE00000802000C00000000276B4C001900007B08'))
+{'temperature': 7.3, 'humidite': 88, 'luminosite': 2494, 'indice_uv': 0.0, 'vent_vitesse': 0.8, 'vent_direction': 12, 'precipitation': 0.0, 'pression_atmospherique': 1009.1, 'rafale_max': 2.5, 'pluie_cumul': 3149.6}
+

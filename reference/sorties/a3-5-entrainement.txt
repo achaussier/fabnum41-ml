@@ -1,0 +1,25 @@
+$ python ml/entrainer_categorie.py
+Deviner l'état du ciel
+  exemples d'entraînement : 26301
+  exemples de test        : 8757
+
+Exactitude (part de bonnes réponses) : plus c'est haut, mieux c'est
+  baseline « toujours Nuageux »  : 53.0%
+  forêt, sur l'entraînement    : 100.0%
+  forêt, sur le test           : 74.9%
+
+Rapport par catégorie
+                precision    recall  f1-score   support
+
+        Dégagé       0.66      0.53      0.59      2571
+       Nuageux       0.73      0.85      0.79      4643
+    Brouillard       0.93      0.64      0.76       437
+Précipitations       1.00      0.86      0.93      1106
+
+      accuracy                           0.75      8757
+     macro avg       0.83      0.72      0.76      8757
+  weighted avg       0.75      0.75      0.74      8757
+
+Graphique         : rapports/matrice_confusion.png
+Modèle enregistré : modeles/categorie.joblib
+

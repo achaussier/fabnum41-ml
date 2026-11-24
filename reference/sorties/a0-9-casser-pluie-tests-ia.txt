@@ -1,0 +1,13 @@
+$ pytest station --tb=line
+============================= test session starts ==============================
+platform linux -- Python 3.13.5, pytest-9.2.0, pluggy-1.7.0
+rootdir: station-meteo-ml
+configfile: pytest.ini
+plugins: anyio-4.16.0
+collected 36 items
+
+station/tests/test_decodeur.py ...................................       [ 97%]
+station/tests/test_exemple.py .                                          [100%]
+
+============================== 36 passed in 0.07s ==============================
+

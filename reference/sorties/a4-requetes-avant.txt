@@ -1,0 +1,12 @@
+$ python reference/envoyer.py 1
+200 {"statut":"ok","modeles":{"prediction":true,"categorie":true}}
+
+$ python reference/envoyer.py 2
+200 {"grandeur":"temperature","instant_prevu":"2025-03-14T12:00:00Z","valeur_prevue":8.7,"incertitude":2.1,"unite":"°C"}
+
+$ python reference/envoyer.py 3
+422 {"error":"Requête invalide : releves","code":"requete_invalide"}
+
+$ python reference/envoyer.py 4
+501 {"error":"La route /classify/conditions n'est pas encore écrite (atelier 4)","code":"non_implemente"}
+

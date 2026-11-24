@@ -1,0 +1,1 @@
+[(0.881, 'temperature'), (0.07, 'heure'), (0.012, 'luminosite'), (0.007, 'jour_annee'), (0.006, 'vent_vitesse'), (0.005, 'pression_atmospherique'), (0.004, 'temperature_moins_3h'), (0.004, 'temperature_moins_1h'), (0.004, 'humidite_moins_3h'), (0.004, 'humidite'), (0.003, 'variation_pression_3h'), (0.001, 'mois')]

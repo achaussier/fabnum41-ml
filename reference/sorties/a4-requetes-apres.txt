@@ -1,0 +1,9 @@
+$ python reference/envoyer.py 1
+200 {"statut":"ok","modeles":{"prediction":true,"categorie":true}}
+
+$ python reference/envoyer.py 4
+200 {"categorie":"Nuageux","probabilites":{"Brouillard":0.0,"Dégagé":0.1,"Nuageux":0.86,"Précipitations":0.04}}
+
+$ python reference/envoyer.py 5
+422 {"error":"Requête invalide : releve.humidite","code":"requete_invalide"}
+

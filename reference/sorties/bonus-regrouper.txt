@@ -1,0 +1,22 @@
+$ python ml/regrouper.py
+1461 journées rangées en 4 groupes
+
+Moyenne de chaque groupe
+groupe                     0        1        2        3
+nombre_de_jours        273.0    357.0    370.0    461.0
+temperature_moyenne     11.4     20.3      6.5     14.3
+humidite_moyenne        83.9     60.5     87.9     74.2
+pression_moyenne       997.8   1009.4   1014.6   1007.8
+vent_moyen               4.6      2.5      2.6      3.0
+pluie_du_jour            8.3      0.2      0.8      1.1
+luminosite_max       33113.0  96884.7  29801.4  71018.7
+amplitude                5.2     13.7      5.6      9.0
+
+Mois le plus fréquent de chaque groupe
+  groupe 0 : mois n°11
+  groupe 1 : mois n°6
+  groupe 2 : mois n°12
+  groupe 3 : mois n°4
+
+À vous : quel nom donneriez-vous à chaque groupe ?
+

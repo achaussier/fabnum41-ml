@@ -1,0 +1,436 @@
+$ pytest station
+============================= test session starts ==============================
+platform linux -- Python 3.13.5, pytest-9.2.0, pluggy-1.7.0
+rootdir: station-meteo-ml
+configfile: pytest.ini
+plugins: anyio-4.16.0
+collected 30 items
+
+station/tests/test_decodeur.py FFFFFFFFF.F...F.F..F.F.....F.             [ 96%]
+station/tests/test_exemple.py .                                          [100%]
+
+=================================== FAILURES ===================================
+__________ test_le_payload_de_reference_est_decode[temperature-26.6] ___________
+
+cle = 'temperature', attendu = 26.6
+
+    @pytest.mark.parametrize("cle, attendu", [
+        ("temperature", 26.6),
+        ("humidite", 91),
+        ("luminosite", 116833),
+        ("indice_uv", 9.6),
+        ("vent_vitesse", 0.9),
+        ("vent_direction", 126),
+        ("precipitation", 0.0),
+        ("pression_atmospherique", 1012.4),
+    ])
+    def test_le_payload_de_reference_est_decode(cle, attendu):
+>       assert decoder(PAYLOAD_REFERENCE)[cle] == pytest.approx(attendu)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+station/tests/test_decodeur.py:34: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+station/decodeur.py:32: in decoder
+    "rafale_max": _entier(payload_hex, 42, 46) / 10,
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+payload_hex = '01010A5B0001C86160000902007E00000000278C', debut = 42, fin = 46
+
+    def _entier(payload_hex: str, debut: int, fin: int) -> int:
+        """Lit un morceau du payload et le convertit en nombre entier."""
+>       return int(payload_hex[debut:fin], 16)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       ValueError: invalid literal for int() with base 16: ''
+
+station/decodeur.py:10: ValueError
+_____________ test_le_payload_de_reference_est_decode[humidite-91] _____________
+
+cle = 'humidite', attendu = 91
+
+    @pytest.mark.parametrize("cle, attendu", [
+        ("temperature", 26.6),
+        ("humidite", 91),
+        ("luminosite", 116833),
+        ("indice_uv", 9.6),
+        ("vent_vitesse", 0.9),
+        ("vent_direction", 126),
+        ("precipitation", 0.0),
+        ("pression_atmospherique", 1012.4),
+    ])
+    def test_le_payload_de_reference_est_decode(cle, attendu):
+>       assert decoder(PAYLOAD_REFERENCE)[cle] == pytest.approx(attendu)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+station/tests/test_decodeur.py:34: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+station/decodeur.py:32: in decoder
+    "rafale_max": _entier(payload_hex, 42, 46) / 10,
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+payload_hex = '01010A5B0001C86160000902007E00000000278C', debut = 42, fin = 46
+
+    def _entier(payload_hex: str, debut: int, fin: int) -> int:
+        """Lit un morceau du payload et le convertit en nombre entier."""
+>       return int(payload_hex[debut:fin], 16)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       ValueError: invalid literal for int() with base 16: ''
+
+station/decodeur.py:10: ValueError
+__________ test_le_payload_de_reference_est_decode[luminosite-116833] __________
+
+cle = 'luminosite', attendu = 116833
+
+    @pytest.mark.parametrize("cle, attendu", [
+        ("temperature", 26.6),
+        ("humidite", 91),
+        ("luminosite", 116833),
+        ("indice_uv", 9.6),
+        ("vent_vitesse", 0.9),
+        ("vent_direction", 126),
+        ("precipitation", 0.0),
+        ("pression_atmospherique", 1012.4),
+    ])
+    def test_le_payload_de_reference_est_decode(cle, attendu):
+>       assert decoder(PAYLOAD_REFERENCE)[cle] == pytest.approx(attendu)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+station/tests/test_decodeur.py:34: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+station/decodeur.py:32: in decoder
+    "rafale_max": _entier(payload_hex, 42, 46) / 10,
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+payload_hex = '01010A5B0001C86160000902007E00000000278C', debut = 42, fin = 46
+
+    def _entier(payload_hex: str, debut: int, fin: int) -> int:
+        """Lit un morceau du payload et le convertit en nombre entier."""
+>       return int(payload_hex[debut:fin], 16)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       ValueError: invalid literal for int() with base 16: ''
+
+station/decodeur.py:10: ValueError
+____________ test_le_payload_de_reference_est_decode[indice_uv-9.6] ____________
+
+cle = 'indice_uv', attendu = 9.6
+
+    @pytest.mark.parametrize("cle, attendu", [
+        ("temperature", 26.6),
+        ("humidite", 91),
+        ("luminosite", 116833),
+        ("indice_uv", 9.6),
+        ("vent_vitesse", 0.9),
+        ("vent_direction", 126),
+        ("precipitation", 0.0),
+        ("pression_atmospherique", 1012.4),
+    ])
+    def test_le_payload_de_reference_est_decode(cle, attendu):
+>       assert decoder(PAYLOAD_REFERENCE)[cle] == pytest.approx(attendu)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+station/tests/test_decodeur.py:34: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+station/decodeur.py:32: in decoder
+    "rafale_max": _entier(payload_hex, 42, 46) / 10,
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+payload_hex = '01010A5B0001C86160000902007E00000000278C', debut = 42, fin = 46
+
+    def _entier(payload_hex: str, debut: int, fin: int) -> int:
+        """Lit un morceau du payload et le convertit en nombre entier."""
+>       return int(payload_hex[debut:fin], 16)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       ValueError: invalid literal for int() with base 16: ''
+
+station/decodeur.py:10: ValueError
+__________ test_le_payload_de_reference_est_decode[vent_vitesse-0.9] ___________
+
+cle = 'vent_vitesse', attendu = 0.9
+
+    @pytest.mark.parametrize("cle, attendu", [
+        ("temperature", 26.6),
+        ("humidite", 91),
+        ("luminosite", 116833),
+        ("indice_uv", 9.6),
+        ("vent_vitesse", 0.9),
+        ("vent_direction", 126),
+        ("precipitation", 0.0),
+        ("pression_atmospherique", 1012.4),
+    ])
+    def test_le_payload_de_reference_est_decode(cle, attendu):
+>       assert decoder(PAYLOAD_REFERENCE)[cle] == pytest.approx(attendu)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+station/tests/test_decodeur.py:34: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+station/decodeur.py:32: in decoder
+    "rafale_max": _entier(payload_hex, 42, 46) / 10,
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+payload_hex = '01010A5B0001C86160000902007E00000000278C', debut = 42, fin = 46
+
+    def _entier(payload_hex: str, debut: int, fin: int) -> int:
+        """Lit un morceau du payload et le convertit en nombre entier."""
+>       return int(payload_hex[debut:fin], 16)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       ValueError: invalid literal for int() with base 16: ''
+
+station/decodeur.py:10: ValueError
+_________ test_le_payload_de_reference_est_decode[vent_direction-126] __________
+
+cle = 'vent_direction', attendu = 126
+
+    @pytest.mark.parametrize("cle, attendu", [
+        ("temperature", 26.6),
+        ("humidite", 91),
+        ("luminosite", 116833),
+        ("indice_uv", 9.6),
+        ("vent_vitesse", 0.9),
+        ("vent_direction", 126),
+        ("precipitation", 0.0),
+        ("pression_atmospherique", 1012.4),
+    ])
+    def test_le_payload_de_reference_est_decode(cle, attendu):
+>       assert decoder(PAYLOAD_REFERENCE)[cle] == pytest.approx(attendu)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+station/tests/test_decodeur.py:34: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+station/decodeur.py:32: in decoder
+    "rafale_max": _entier(payload_hex, 42, 46) / 10,
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+payload_hex = '01010A5B0001C86160000902007E00000000278C', debut = 42, fin = 46
+
+    def _entier(payload_hex: str, debut: int, fin: int) -> int:
+        """Lit un morceau du payload et le convertit en nombre entier."""
+>       return int(payload_hex[debut:fin], 16)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       ValueError: invalid literal for int() with base 16: ''
+
+station/decodeur.py:10: ValueError
+__________ test_le_payload_de_reference_est_decode[precipitation-0.0] __________
+
+cle = 'precipitation', attendu = 0.0
+
+    @pytest.mark.parametrize("cle, attendu", [
+        ("temperature", 26.6),
+        ("humidite", 91),
+        ("luminosite", 116833),
+        ("indice_uv", 9.6),
+        ("vent_vitesse", 0.9),
+        ("vent_direction", 126),
+        ("precipitation", 0.0),
+        ("pression_atmospherique", 1012.4),
+    ])
+    def test_le_payload_de_reference_est_decode(cle, attendu):
+>       assert decoder(PAYLOAD_REFERENCE)[cle] == pytest.approx(attendu)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+station/tests/test_decodeur.py:34: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+station/decodeur.py:32: in decoder
+    "rafale_max": _entier(payload_hex, 42, 46) / 10,
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+payload_hex = '01010A5B0001C86160000902007E00000000278C', debut = 42, fin = 46
+
+    def _entier(payload_hex: str, debut: int, fin: int) -> int:
+        """Lit un morceau du payload et le convertit en nombre entier."""
+>       return int(payload_hex[debut:fin], 16)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       ValueError: invalid literal for int() with base 16: ''
+
+station/decodeur.py:10: ValueError
+____ test_le_payload_de_reference_est_decode[pression_atmospherique-1012.4] ____
+
+cle = 'pression_atmospherique', attendu = 1012.4
+
+    @pytest.mark.parametrize("cle, attendu", [
+        ("temperature", 26.6),
+        ("humidite", 91),
+        ("luminosite", 116833),
+        ("indice_uv", 9.6),
+        ("vent_vitesse", 0.9),
+        ("vent_direction", 126),
+        ("precipitation", 0.0),
+        ("pression_atmospherique", 1012.4),
+    ])
+    def test_le_payload_de_reference_est_decode(cle, attendu):
+>       assert decoder(PAYLOAD_REFERENCE)[cle] == pytest.approx(attendu)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+station/tests/test_decodeur.py:34: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+station/decodeur.py:32: in decoder
+    "rafale_max": _entier(payload_hex, 42, 46) / 10,
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+payload_hex = '01010A5B0001C86160000902007E00000000278C', debut = 42, fin = 46
+
+    def _entier(payload_hex: str, debut: int, fin: int) -> int:
+        """Lit un morceau du payload et le convertit en nombre entier."""
+>       return int(payload_hex[debut:fin], 16)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       ValueError: invalid literal for int() with base 16: ''
+
+station/decodeur.py:10: ValueError
+___________ test_un_payload_de_40_caracteres_n_a_ni_rafale_ni_cumul ____________
+
+    def test_un_payload_de_40_caracteres_n_a_ni_rafale_ni_cumul():
+>       mesures = decoder(PAYLOAD_REFERENCE)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+station/tests/test_decodeur.py:38: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+station/decodeur.py:32: in decoder
+    "rafale_max": _entier(payload_hex, 42, 46) / 10,
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+payload_hex = '01010A5B0001C86160000902007E00000000278C', debut = 42, fin = 46
+
+    def _entier(payload_hex: str, debut: int, fin: int) -> int:
+        """Lit un morceau du payload et le convertit en nombre entier."""
+>       return int(payload_hex[debut:fin], 16)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       ValueError: invalid literal for int() with base 16: ''
+
+station/decodeur.py:10: ValueError
+_______________ test_le_payload_complet_est_decode[humidite-88] ________________
+
+cle = 'humidite', attendu = 88
+
+    @pytest.mark.parametrize("cle, attendu", [
+        ("temperature", 7.3),
+        ("humidite", 88),
+        ("luminosite", 2494),
+        ("indice_uv", 0.0),
+        ("vent_vitesse", 0.8),
+        ("vent_direction", 12),
+        ("precipitation", 0.0),
+        ("pression_atmospherique", 1009.1),
+        ("rafale_max", 2.5),
+        ("pluie_cumul", 3149.6),
+    ])
+    def test_le_payload_complet_est_decode(cle, attendu):
+>       assert decoder(PAYLOAD_COMPLET)[cle] == pytest.approx(attendu)
+E       assert 8.8 == 88 ± 8.8e-05
+E         
+E         comparison failed
+E         Obtained: 8.8
+E         Expected: 88 ± 8.8e-05
+
+station/tests/test_decodeur.py:58: AssertionError
+____________ test_le_payload_complet_est_decode[vent_direction-12] _____________
+
+cle = 'vent_direction', attendu = 12
+
+    @pytest.mark.parametrize("cle, attendu", [
+        ("temperature", 7.3),
+        ("humidite", 88),
+        ("luminosite", 2494),
+        ("indice_uv", 0.0),
+        ("vent_vitesse", 0.8),
+        ("vent_direction", 12),
+        ("precipitation", 0.0),
+        ("pression_atmospherique", 1009.1),
+        ("rafale_max", 2.5),
+        ("pluie_cumul", 3149.6),
+    ])
+    def test_le_payload_complet_est_decode(cle, attendu):
+>       assert decoder(PAYLOAD_COMPLET)[cle] == pytest.approx(attendu)
+E       assert 1.2 == 12 ± 1.2e-05
+E         
+E         comparison failed
+E         Obtained: 1.2
+E         Expected: 12 ± 1.2e-05
+
+station/tests/test_decodeur.py:58: AssertionError
+______ test_le_payload_complet_est_decode[pression_atmospherique-1009.1] _______
+
+cle = 'pression_atmospherique', attendu = 1009.1
+
+    @pytest.mark.parametrize("cle, attendu", [
+        ("temperature", 7.3),
+        ("humidite", 88),
+        ("luminosite", 2494),
+        ("indice_uv", 0.0),
+        ("vent_vitesse", 0.8),
+        ("vent_direction", 12),
+        ("precipitation", 0.0),
+        ("pression_atmospherique", 1009.1),
+        ("rafale_max", 2.5),
+        ("pluie_cumul", 3149.6),
+    ])
+    def test_le_payload_complet_est_decode(cle, attendu):
+>       assert decoder(PAYLOAD_COMPLET)[cle] == pytest.approx(attendu)
+E       assert 10091 == 1009.1 ± 0.0010091
+E         
+E         comparison failed
+E         Obtained: 10091
+E         Expected: 1009.1 ± 0.0010091
+
+station/tests/test_decodeur.py:58: AssertionError
+_______ test_humidite_luminosite_et_direction_sont_des_entiers[humidite] _______
+
+cle = 'humidite'
+
+    @pytest.mark.parametrize("cle", ["humidite", "luminosite", "vent_direction"])
+    def test_humidite_luminosite_et_direction_sont_des_entiers(cle):
+>       assert isinstance(decoder(PAYLOAD_COMPLET)[cle], int)
+E       assert False
+E        +  where False = isinstance(8.8, int)
+
+station/tests/test_decodeur.py:63: AssertionError
+____ test_humidite_luminosite_et_direction_sont_des_entiers[vent_direction] ____
+
+cle = 'vent_direction'
+
+    @pytest.mark.parametrize("cle", ["humidite", "luminosite", "vent_direction"])
+    def test_humidite_luminosite_et_direction_sont_des_entiers(cle):
+>       assert isinstance(decoder(PAYLOAD_COMPLET)[cle], int)
+E       assert False
+E        +  where False = isinstance(1.2, int)
+
+station/tests/test_decodeur.py:63: AssertionError
+_ test_un_payload_qui_n_est_pas_de_l_hexadecimal_est_refuse[ZZ004958000009BE00000802000C00000000276B4C001900007B08] _
+
+payload = 'ZZ004958000009BE00000802000C00000000276B4C001900007B08'
+
+    @pytest.mark.parametrize("payload", [
+        "Z" * 54,
+        PAYLOAD_COMPLET[:10] + "G" + PAYLOAD_COMPLET[11:],  # dans une mesure
+        "ZZ" + PAYLOAD_COMPLET[2:],                         # dans un identifiant de bloc
+    ])
+    def test_un_payload_qui_n_est_pas_de_l_hexadecimal_est_refuse(payload):
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+station/tests/test_decodeur.py:88: Failed
+=========================== short test summary info ============================
+FAILED station/tests/test_decodeur.py::test_le_payload_de_reference_est_decode[temperature-26.6]
+FAILED station/tests/test_decodeur.py::test_le_payload_de_reference_est_decode[humidite-91]
+FAILED station/tests/test_decodeur.py::test_le_payload_de_reference_est_decode[luminosite-116833]
+FAILED station/tests/test_decodeur.py::test_le_payload_de_reference_est_decode[indice_uv-9.6]
+FAILED station/tests/test_decodeur.py::test_le_payload_de_reference_est_decode[vent_vitesse-0.9]
+FAILED station/tests/test_decodeur.py::test_le_payload_de_reference_est_decode[vent_direction-126]
+FAILED station/tests/test_decodeur.py::test_le_payload_de_reference_est_decode[precipitation-0.0]
+FAILED station/tests/test_decodeur.py::test_le_payload_de_reference_est_decode[pression_atmospherique-1012.4]
+FAILED station/tests/test_decodeur.py::test_un_payload_de_40_caracteres_n_a_ni_rafale_ni_cumul
+FAILED station/tests/test_decodeur.py::test_le_payload_complet_est_decode[humidite-88]
+FAILED station/tests/test_decodeur.py::test_le_payload_complet_est_decode[vent_direction-12]
+FAILED station/tests/test_decodeur.py::test_le_payload_complet_est_decode[pression_atmospherique-1009.1]
+FAILED station/tests/test_decodeur.py::test_humidite_luminosite_et_direction_sont_des_entiers[humidite]
+FAILED station/tests/test_decodeur.py::test_humidite_luminosite_et_direction_sont_des_entiers[vent_direction]
+FAILED station/tests/test_decodeur.py::test_un_payload_qui_n_est_pas_de_l_hexadecimal_est_refuse[ZZ004958000009BE00000802000C00000000276B4C001900007B08]
+======================== 15 failed, 15 passed in 0.15s =========================
+

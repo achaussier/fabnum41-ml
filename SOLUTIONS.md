@@ -5,6 +5,10 @@ Cette branche (`solutions`) contient le dépôt une fois les ateliers 0 à 5 et 
 
 Pour comparer avec le point de départ : `git diff main solutions -- station/decodeur.py`.
 
+**Pour répéter la journée :** [`reference/README.md`](reference/README.md) donne le déroulé exact, commande par
+commande, avec la sortie attendue de chacune, les graphiques produits et un exemple de réponse de l'IA
+pour chaque prompt.
+
 ## Chiffres de référence
 
 Obtenus avec `donnees/historique_blois.csv` (35 064 relevés), jeu de test = année 2025.

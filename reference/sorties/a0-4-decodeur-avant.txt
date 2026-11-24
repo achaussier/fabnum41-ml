@@ -1,0 +1,15 @@
+$ python -c from station.decodeur import decoder; print(decoder('01010A5B0001C86160000902007E00000000278C'))
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    from station.decodeur import decoder; print(decoder('01010A5B0001C86160000902007E00000000278C'))
+                                                ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "station/decodeur.py", line 32, in decoder
+    "rafale_max": _entier(payload_hex, 42, 46) / 10,
+                  ~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "station/decodeur.py", line 10, in _entier
+    return int(payload_hex[debut:fin], 16)
+ValueError: invalid literal for int() with base 16: ''
+
+$ python -c from station.decodeur import decoder; print(decoder('01004958000009BE00000802000C00000000276B4C001900007B08'))
+{'temperature': 7.3, 'humidite': 8.8, 'luminosite': 2494, 'indice_uv': 0.0, 'vent_vitesse': 0.8, 'vent_direction': 1.2, 'precipitation': 0.0, 'pression_atmospherique': 10091, 'rafale_max': 2.5, 'pluie_cumul': 3149.6}
+

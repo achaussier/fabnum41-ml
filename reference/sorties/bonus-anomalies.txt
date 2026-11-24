@@ -1,0 +1,20 @@
+$ python donnees/generer_synthetique.py --debut 2022-01-01 --jours 1461 --graine 42 --pannes --sortie donnees/synthetique.csv
+35064 relevés simulés écrits dans donnees/synthetique.csv, dont 592 marqués comme pannes
+
+$ python ml/anomalies.py
+Détection des pannes de capteur (données simulées)
+  relevés analysés        : 35063
+  pannes injectées        : 592
+  relevés signalés        : 702
+  pannes retrouvées       : 277 sur 592 (47%)
+  fausses alertes         : 425
+  baseline « au hasard »  : 2% des pannes retrouvées, en signalant autant de relevés
+
+702 lignes au format de la table anomalie : rapports/anomalies.csv
+INSTANT_MESURE_ANORMALE  VALEUR_MESUREE  SCORE_ANOMALIE CODE_GRANDEUR
+    2023-12-20 08:00:00           930.9           67.97      PRESSION
+    2023-12-21 10:00:00           100.0           67.28      HUMIDITE
+    2023-12-21 21:00:00           100.0           64.94      HUMIDITE
+    2023-12-20 09:00:00          1002.0           64.32      PRESSION
+    2023-12-21 04:00:00           100.0           64.00      HUMIDITE
+
